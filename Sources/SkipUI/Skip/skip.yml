@@ -20,6 +20,7 @@ settings:
                 - 'version("androidx-lifecycle-process", "2.10.0")'
                 - 'version("androidx-material3-adaptive", "1.2.0")'
                 - 'version("androidx-work", "2.11.1")'
+                - 'version("androidx-biometric", "1.1.0")'
 
                 # the version for these libraries is derived from the kotlin-bom declared is skip-model/Sources/SkipModel/Skip/skip.yml
                 - 'library("androidx-core-ktx", "androidx.core", "core-ktx").withoutVersion()'
@@ -43,6 +44,7 @@ settings:
                 - 'library("androidx-compose-material3-adaptive-navigation-suite", "androidx.compose.material3", "material3-adaptive-navigation-suite").versionRef("androidx-material3-adaptive")'
 
                 - 'library("androidx-work-runtime", "androidx.work", "work-runtime-ktx").versionRef("androidx-work")'
+                - 'library("androidx-biometric", "androidx.biometric", "biometric").versionRef("androidx-biometric")'
 
                 - 'library("coil-compose", "io.coil-kt.coil3", "coil-compose").versionRef("coil")'
                 - 'library("coil-network-okhttp", "io.coil-kt.coil3", "coil-network-okhttp").versionRef("coil")'
@@ -88,6 +90,7 @@ build:
         - 'api(libs.androidx.activity.compose)'
         - 'api(libs.androidx.lifecycle.process)'
         - 'api(libs.androidx.work.runtime)'
+        - 'api(libs.androidx.biometric)'
         - 'implementation(libs.coil.compose)'
         - 'implementation(libs.coil.network.okhttp)'
         - 'implementation(libs.coil.svg)'
