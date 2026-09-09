@@ -35,6 +35,7 @@ across the Skip bridge:
 | `createChildDocument(_:name:mimeType:)` | a file, or with `documentFolderMIMEType` a folder |
 | `childDocumentNames(_:)` / `childDocumentURI(_:name:)` | what is inside a folder |
 | `readContentURI(_:)` / `writeContentURI(_:data:)` | bytes in and out of a content URI |
+| `deleteContentURI(_:)` | remove a file, or a folder and its contents |
 | `contentURIName(_:)` / `contentURIType(_:)` | display name and MIME type |
 | `openContentURI(_:mimeType:)` | hand a document to whatever can display it |
 | `canAuthenticateDeviceOwner()` / `authenticateDeviceOwner(title:subtitle:)` | `BiometricPrompt` |

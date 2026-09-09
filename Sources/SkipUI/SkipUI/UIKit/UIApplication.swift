@@ -311,6 +311,22 @@ let logger: Logger = Logger(subsystem: "skip.ui", category: "SkipUI") // adb log
         }
     }
 
+    /// Delete the document — a file, or a folder with everything in it — at the given content URI.
+    ///
+    /// Deleting a folder is left to the provider, which is recursive on the ones that back a granted
+    /// tree; a provider that refuses returns false rather than throwing, so a caller tidying old
+    /// files can carry on with the rest.
+    // SKIP @bridge
+    public func deleteContentURI(_ uriString: String) -> Bool {
+        do {
+            let context = ProcessInfo.processInfo.androidContext
+            return DocumentsContract.deleteDocument(context.contentResolver, android.net.Uri.parse(uriString))
+        } catch {
+            logger.warning("deleteContentURI: \(error)")
+            return false
+        }
+    }
+
     /// The display name of the document at the given content URI.
     // SKIP @bridge
     public func contentURIName(_ uriString: String) -> String? {
