@@ -101,7 +101,9 @@ public final class Menu : View, Renderable {
         let anchorWidth = remember { mutableStateOf(0.dp) }
         let density = LocalDensity.current
         ComposeContainer(eraseAxis: true, modifier: context.modifier) { modifier in
-            Box(modifier: modifier.onGloballyPositioned { anchorWidth.value = with(density) { $0.size.width.toDp() } }) {
+            Box(modifier: modifier.onGloballyPositioned { coordinates in
+                anchorWidth.value = with(density) { coordinates.size.width.toDp() }
+            }) {
                 if let primaryAction {
                     let primaryActionModifier = Modifier.combinedClickable(
                         enabled = isEnabled,
