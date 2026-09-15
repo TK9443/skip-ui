@@ -36,7 +36,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
     let preferredColorSchemeCollector = PreferenceCollector<PreferredColorScheme>(key: PreferredColorSchemePreferenceKey.self, state: preferredColorScheme)
     PreferenceValues.shared.collectPreferences([preferredColorSchemeCollector]) {
         let materialColorScheme = preferredColorScheme.value.reduced.colorScheme?.asMaterialTheme() ?? defaultColorScheme?.asMaterialTheme() ?? MaterialTheme.colorScheme
-        MaterialTheme(colorScheme: materialColorScheme) {
+        // See PressDim.kt: the ripple's grey touch box becomes a dim of the content while pressed.
+        PressDimMaterialTheme(colorScheme: materialColorScheme) {
             let presentationBounds = remember { mutableStateOf(Rect.Zero) }
             let density = LocalDensity.current
             let layoutDirection = LocalLayoutDirection.current

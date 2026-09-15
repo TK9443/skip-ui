@@ -355,7 +355,7 @@ public struct NavigationStack : View, Renderable {
                 } else {
                     materialColorScheme = MaterialTheme.colorScheme
                 }
-                MaterialTheme(colorScheme: materialColorScheme) {
+                PressDimMaterialTheme(colorScheme: materialColorScheme) { // See PressDim.kt
                     let topBarBackgroundColor: androidx.compose.ui.graphics.Color
                     let unscrolledTopBarBackgroundColor: androidx.compose.ui.graphics.Color
                     let topBarBackgroundForBrush: ShapeStyle?
@@ -482,7 +482,7 @@ public struct NavigationStack : View, Renderable {
                             let typography = MaterialTheme.typography
                             let appBarTitleStyle = typography.headlineLarge.copy(fontWeight: FontWeight.Bold)
                             let appBarTypography = typography.copy(headlineSmall: appBarTitleStyle)
-                            MaterialTheme(colorScheme: MaterialTheme.colorScheme, typography: appBarTypography, shapes: MaterialTheme.shapes) {
+                            PressDimMaterialTheme(colorScheme: MaterialTheme.colorScheme, typography: appBarTypography, shapes: MaterialTheme.shapes) { // See PressDim.kt
                                 if options.preferLargeStyle {
                                     LargeTopAppBar(title: options.title, modifier: options.modifier, navigationIcon: options.navigationIcon, actions: { topBarActions() }, colors: options.colors, scrollBehavior: options.scrollBehavior)
                                 } else {
@@ -520,7 +520,7 @@ public struct NavigationStack : View, Renderable {
             } else {
                 materialColorScheme = MaterialTheme.colorScheme
             }
-            MaterialTheme(colorScheme: materialColorScheme) {
+            PressDimMaterialTheme(colorScheme: materialColorScheme) { // See PressDim.kt
                 let bottomBarBackgroundColor: androidx.compose.ui.graphics.Color
                 let unscrolledBottomBarBackgroundColor: androidx.compose.ui.graphics.Color
                 let bottomBarBackgroundForBrush: ShapeStyle?
