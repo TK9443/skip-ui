@@ -5,6 +5,7 @@ import Foundation
 #if SKIP
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.DropdownMenu
@@ -17,6 +18,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 #endif
@@ -91,8 +96,12 @@ public final class Menu : View, Renderable {
     @Composable override func Render(context: ComposeContext) {
         let contentContext = context.content()
         let isEnabled = EnvironmentValues.shared.isEnabled
+        // The dropdown is at least as wide as what opened it, so a full-width field does not open a
+        // narrow list pinned under its left edge.
+        let anchorWidth = remember { mutableStateOf(0.dp) }
+        let density = LocalDensity.current
         ComposeContainer(eraseAxis: true, modifier: context.modifier) { modifier in
-            Box(modifier: modifier) {
+            Box(modifier: modifier.onGloballyPositioned { anchorWidth.value = with(density) { $0.size.width.toDp() } }) {
                 if let primaryAction {
                     let primaryActionModifier = Modifier.combinedClickable(
                         enabled = isEnabled,
@@ -104,7 +113,7 @@ public final class Menu : View, Renderable {
                     label.Compose(context: contentContext)
                 }
                 if isEnabled {
-                    toggleMenu = Self.RenderDropdownMenu(content: content, context: contentContext)
+                    toggleMenu = Self.RenderDropdownMenu(content: content, context: contentContext, minWidth: anchorWidth.value)
                 } else {
                     toggleMenu = {}
                 }
@@ -112,7 +121,7 @@ public final class Menu : View, Renderable {
         }
     }
 
-    @Composable static func RenderDropdownMenu(content: ComposeBuilder, context: ComposeContext) -> () -> Void {
+    @Composable static func RenderDropdownMenu(content: ComposeBuilder, context: ComposeContext, minWidth: Dp = Dp.Unspecified) -> () -> Void {
         // We default to displaying our own content, but if the user selects a nested menu we can present
         // that instead. The nested menu selection is cleared on dismiss
         let isMenuExpanded = remember { mutableStateOf(false) }
@@ -134,7 +143,7 @@ public final class Menu : View, Renderable {
                 }
             }
         }
-        DropdownMenu(expanded: isMenuExpanded.value, onDismissRequest: {
+        DropdownMenu(expanded: isMenuExpanded.value, modifier: Modifier.widthIn(min: minWidth), onDismissRequest: {
             isMenuExpanded.value = false
             coroutineScope.launch {
                 delay(100) // Otherwise we see a flash of the primary menu on nested menu dismiss

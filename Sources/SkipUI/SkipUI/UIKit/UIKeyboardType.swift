@@ -32,7 +32,9 @@ public enum UIKeyboardType: Int {
         case .URL:
             return KeyboardType.Uri
         case .numberPad:
-            return KeyboardType.NumberPassword
+            // Not NumberPassword: that reports the field to autofill as a password, and Bitwarden then
+            // offered to save a HorseDex expense's "How many" as a login.
+            return KeyboardType.Number
         case .phonePad:
             return KeyboardType.Phone
         case .namePhonePad:
