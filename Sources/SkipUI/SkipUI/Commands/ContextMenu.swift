@@ -104,7 +104,6 @@ class ContextMenuModifier: RenderModifier {
                 EnvironmentValues.shared.setValues {
                     placement.remove(ViewPlacement.toolbar)
                     $0.set_placement(placement)
-                    $0.set_layoutAxis(Axis.vertical) // A column, as in Menu.RenderDropdownMenu
                     return ComposeResult.ok
                 } in: {
                     let renderables = nestedMenu.value?.content.Evaluate(context: contentContext, options: 0) ?? primaryMenuItems

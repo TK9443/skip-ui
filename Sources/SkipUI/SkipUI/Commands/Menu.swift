@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -156,9 +157,6 @@ public final class Menu : View, Renderable {
             EnvironmentValues.shared.setValues {
                 placement.remove(ViewPlacement.toolbar) // Menus popovers are displayed outside the toolbar context
                 $0.set_placement(placement)
-                // The dropdown is a column whatever row its button sits in. Inherited, a menu opened
-                // from an HStack drew each section's Divider as a 1dp vertical line, which is nothing.
-                $0.set_layoutAxis(Axis.vertical)
                 return ComposeResult.ok
             } in: {
                 let renderables = (nestedMenu.value?.content ?? content).Evaluate(context: context, options: 0)
@@ -206,7 +204,9 @@ public final class Menu : View, Renderable {
                 }
                 let sectionRenderables = section.content.Evaluate(context: context, options: 0)
                 RenderDropdownMenuItems(for: sectionRenderables, selection: selection, isPicker: isPicker, context: context, replaceMenu: replaceMenu)
-                Divider().Compose(context: context)
+                // Not `Divider().Compose(context:)`: that renders with the menu button's own context,
+                // and inside the dropdown it was laid out at no size at all — no line under a section.
+                HorizontalDivider(color: Color.separator.colorImpl())
             } else if let menu = stripped as? Menu {
                 if let button = menu.label.Evaluate(context: context, options: 0).firstOrNull()?.strip() as? Button {
                     RenderDropdownMenuItem(for: button.label, context: context, modifier: itemModifier) {
