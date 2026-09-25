@@ -156,6 +156,9 @@ public final class Menu : View, Renderable {
             EnvironmentValues.shared.setValues {
                 placement.remove(ViewPlacement.toolbar) // Menus popovers are displayed outside the toolbar context
                 $0.set_placement(placement)
+                // The dropdown is a column whatever row its button sits in. Inherited, a menu opened
+                // from an HStack drew each section's Divider as a 1dp vertical line, which is nothing.
+                $0.set_layoutAxis(Axis.vertical)
                 return ComposeResult.ok
             } in: {
                 let renderables = (nestedMenu.value?.content ?? content).Evaluate(context: context, options: 0)
@@ -165,7 +168,10 @@ public final class Menu : View, Renderable {
         return toggleMenu
     }
 
-    @Composable static func RenderDropdownMenuItems(for renderables: kotlin.collections.List<Renderable>, selection: Hashable? = nil, context: ComposeContext, replaceMenu: (Menu?) -> Void) {
+    /// `isPicker` is what gives each item a leading check-mark slot. It cannot be inferred from a tag:
+    /// `ForEach` tags every item it makes, so inside a plain `Menu` a tag only means the items came
+    /// from a loop, and treating them as choices indented them past the menu's other buttons.
+    @Composable static func RenderDropdownMenuItems(for renderables: kotlin.collections.List<Renderable>, selection: Hashable? = nil, isPicker: Bool = false, context: ComposeContext, replaceMenu: (Menu?) -> Void) {
         for renderable in renderables {
             var stripped = renderable.strip()
             if let shareLink = stripped as? ShareLink {
@@ -182,7 +188,7 @@ public final class Menu : View, Renderable {
             let itemModifier = accessibilityModifier(for: renderable, context: context)
             if let button = stripped as? Button {
                 let isSelected: Bool?
-                if let tagModifier = TagModifier.on(content: renderable, role: .tag) {
+                if isPicker, let tagModifier = TagModifier.on(content: renderable, role: .tag) {
                     isSelected = tagModifier.value == selection
                 } else {
                     isSelected = nil
@@ -199,7 +205,7 @@ public final class Menu : View, Renderable {
                     DropdownMenuItem(text: { header.Compose(context: context) }, onClick: {}, modifier: itemModifier, enabled: false)
                 }
                 let sectionRenderables = section.content.Evaluate(context: context, options: 0)
-                RenderDropdownMenuItems(for: sectionRenderables, context: context, replaceMenu: replaceMenu)
+                RenderDropdownMenuItems(for: sectionRenderables, selection: selection, isPicker: isPicker, context: context, replaceMenu: replaceMenu)
                 Divider().Compose(context: context)
             } else if let menu = stripped as? Menu {
                 if let button = menu.label.Evaluate(context: context, options: 0).firstOrNull()?.strip() as? Button {
